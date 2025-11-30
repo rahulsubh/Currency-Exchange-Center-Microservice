@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: currency-exchange-service
+  config:
+    import:
+      - optional:configserver:http://localhost:8888
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+  datasource:
+    url: jdbc:mysql://localhost:3306/currency_exchange_db?createDatabaseIfNotExist=true
+    username: root
+    password: rahul1999@
+server:
+  port: 8000
+
+
