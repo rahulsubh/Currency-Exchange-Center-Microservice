@@ -1,5 +1,6 @@
 package com.rahul.Controller;
 
+import com.rahul.FeignClient.CurrencyExchangeProxy;
 import com.rahul.bean.CurrencyConversion;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CurrencyConversionController {
 
+    private final CurrencyExchangeProxy currencyExchangeProxy;
+
     @GetMapping("/currency-conversion/from/{from}/to/{to}/quantity/{quantity}")
     public CurrencyConversion convertCurrency(
             @PathVariable String from,
@@ -28,6 +31,21 @@ public class CurrencyConversionController {
         ResponseEntity<CurrencyConversion> entity = new RestTemplate().getForEntity("http://localhost:8000/currency-exchange/from/{from}/to/{to}",
                 CurrencyConversion.class, map);
         CurrencyConversion currencyConversion = entity.getBody();
+        return new CurrencyConversion
+                (currencyConversion.getId(), from,
+                        to, quantity, currencyConversion.getConversionMultiple(),
+                        quantity.multiply(currencyConversion.getConversionMultiple()),
+                        currencyConversion.getEnvironment());
+    }
+
+    @GetMapping("/currency-conversion-feign/from/{from}/to/{to}/quantity/{quantity}")
+    public CurrencyConversion convertCurrencyFeign(
+            @PathVariable String from,
+            @PathVariable String to,
+            @PathVariable BigDecimal quantity
+    ){
+
+        CurrencyConversion currencyConversion = currencyExchangeProxy.retrieveExchangeValue(from, to);
         return new CurrencyConversion
                 (currencyConversion.getId(), from,
                         to, quantity, currencyConversion.getConversionMultiple(),
