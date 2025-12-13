@@ -1,6 +1,6 @@
 spring:
   application:
-    name: currency-exchange-service
+    name: currency-exchange
   config:
     import:
       - optional:configserver:http://localhost:8888
