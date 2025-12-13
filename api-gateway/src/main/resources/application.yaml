@@ -1,7 +1,21 @@
 spring:
   application:
     name: api-gateway
-
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: CURRENCY-EXCHANGE
+          uri: lb://CURRENCY-EXCHANGE
+          predicates:
+            - Path=/currency-exchange/**
+        - id: CURRENCY-CONVERSION
+          uri: lb://CURRENCY-CONVERSION
+          predicates:
+            - Path=/currency-conversion/**
 server:
   port: 8765
 
